@@ -37,6 +37,8 @@ jobs:
           cache: pip
           cache-dependency-path: mobile/pyproject.toml
       - run: pip install -e .
+      - name: Ignore custom launcher icon during CI
+        run: rm -f src/assets/icon.png
       - name: Build web
         run: flet build web . --yes --python-version 3.12
       - uses: actions/upload-artifact@v4
@@ -60,6 +62,8 @@ jobs:
           cache: pip
           cache-dependency-path: mobile/pyproject.toml
       - run: pip install -e .
+      - name: Ignore custom launcher icon during CI
+        run: rm -f src/assets/icon.png
       - name: Build APK
         run: flet build apk . --yes --split-per-abi --python-version 3.12
       - uses: actions/upload-artifact@v4
