@@ -7,7 +7,7 @@ import httpx
 class ApiClient:
     def __init__(self) -> None:
         self.base_url = os.getenv("SADANGU_API_URL", "http://127.0.0.1:8000").rstrip("/")
-        self.timeout = 10.0
+        self.timeout = 12.0
         self.token: str | None = None
 
     def _request(self, method: str, path: str, **kwargs) -> Any:
@@ -44,8 +44,20 @@ class ApiClient:
     def create_booking(self, payload: dict):
         return self._request("POST", "/api/bookings", json=payload)
 
+    def update_booking(self, booking_id: str, payload: dict):
+        return self._request("PUT", f"/api/bookings/{booking_id}", json=payload)
+
+    def update_booking_status(self, booking_id: str, status: str):
+        return self._request("PATCH", f"/api/bookings/{booking_id}/status", json={"status": status})
+
     def customers(self):
         return self._request("GET", "/api/customers")
+
+    def create_customer(self, payload: dict):
+        return self._request("POST", "/api/customers", json=payload)
+
+    def update_customer(self, customer_id: str, payload: dict):
+        return self._request("PUT", f"/api/customers/{customer_id}", json=payload)
 
     def payments(self):
         return self._request("GET", "/api/payments")

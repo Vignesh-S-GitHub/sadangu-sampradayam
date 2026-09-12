@@ -1,15 +1,27 @@
+# Python
 __pycache__/
 *.py[cod]
-*.db
-.env
+.pytest_cache/
 .venv/
 venv/
-.pytest_cache/
-.coverage
-htmlcov/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets / environment
+.env
+.env.*
+!.env.example
+
+# Flet/build outputs
 build/
 dist/
-.flet/
-.DS_Store
-.idea/
+mobile/build/
+
+# IDE / OS
 .vscode/
+.idea/
+.DS_Store
+Thumbs.db

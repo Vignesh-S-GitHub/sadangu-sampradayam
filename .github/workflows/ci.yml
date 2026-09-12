@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "release/**"
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  python-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m compileall -q backend/app mobile/src
+
+  supabase-readonly-smoke:
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      APP_ENV: production
+      AUTH_REQUIRED: "true"
+      ADMIN_PHONE: "9000000000"
+      ADMIN_PIN: "9999"
+      JWT_SECRET: "ci-only-secret-that-is-long-enough-for-tests"
+      AUTO_CREATE_SCHEMA: "false"
+      SEED_DEMO_DATA: "false"
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Verify production database connection and master data
+        shell: bash
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "DATABASE_URL GitHub secret is required" >&2
+            exit 1
+          fi
+          python - <<'PY'
+          from sqlalchemy import text
+          from app.db import engine
+          with engine.connect() as conn:
+              assert conn.execute(text("select 1")).scalar_one() == 1
+              count = conn.execute(text("select count(*) from ceremony_types")).scalar_one()
+              assert count >= 8, f"Expected at least 8 ceremonies, found {count}"
+          print("Supabase read-only smoke test passed")
+          PY
