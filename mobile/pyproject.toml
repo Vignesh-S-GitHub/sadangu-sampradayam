@@ -1,0 +1,23 @@
+[project]
+name = "sadangu-sampradayam-mobile"
+version = "1.0.0"
+description = "Tamil-first Flet mobile app for Purohit service management"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+  "flet[all]==0.86.5",
+  "httpx>=0.27,<1.0",
+]
+
+[tool.flet]
+org = "com.sadangusampradayam"
+product = "Sadangu Sampradayam"
+company = "Sadangu Sampradayam"
+copyright = "2026 Sadangu Sampradayam"
+
+[tool.flet.splash]
+color = "#FFF8E8"
+dark_color = "#FFF8E8"
+
+[tool.flet.app]
+path = "src"
+module = "main"
