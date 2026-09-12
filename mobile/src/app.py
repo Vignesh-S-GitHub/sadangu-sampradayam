@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import flet as ft
 import httpx
 
@@ -11,8 +13,27 @@ from screens.more import more_screen
 from screens.payments import payments_screen
 from screens.pooja import pooja_screen
 from screens.reminders import reminders_screen
-from theme import CARD, CREAM, CREAM_DARK, GOLD, MAROON, MOBILE_MAX_WIDTH, MUTED, WHITE
+from theme import CREAM, CREAM_DARK, GOLD, MAROON, MOBILE_MAX_WIDTH, MUTED, WHITE
 from ui import input_field, primary_button, tamil_title
+
+
+ASSETS_DIR = Path(__file__).resolve().parent / "assets"
+
+
+def brand_image(name: str, *, width: int, height: int, fallback_icon=ft.Icons.TEMPLE_HINDU_ROUNDED) -> ft.Control:
+    """Render a branding asset when present, otherwise keep the app usable with a native icon.
+
+    Custom logo/icon/splash files are intentionally not committed. Upload them manually to
+    mobile/src/assets using the documented filenames and the UI will pick them up automatically.
+    """
+    if (ASSETS_DIR / name).is_file():
+        return ft.Image(src=name, width=width, height=height, fit=ft.BoxFit.CONTAIN)
+    return ft.Container(
+        width=width,
+        height=height,
+        alignment=ft.Alignment.CENTER,
+        content=ft.Icon(fallback_icon, size=min(width, height) * 0.58, color=GOLD),
+    )
 
 
 class SadanguApp:
@@ -66,7 +87,7 @@ class SadanguApp:
                     ft.Row(
                         spacing=8,
                         controls=[
-                            ft.Image(src="logo_mark.png", width=42, height=42, fit=ft.BoxFit.CONTAIN),
+                            brand_image("logo_mark.png", width=42, height=42),
                             ft.Column(
                                 spacing=0,
                                 controls=[
@@ -129,7 +150,7 @@ class SadanguApp:
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 spacing=4,
                 controls=[
-                    ft.Image(src="logo.png", width=255, height=255, fit=ft.BoxFit.CONTAIN),
+                    brand_image("logo.png", width=255, height=255),
                     ft.Text("புரோகிதர் சேவை மேலாண்மை", size=13, color="#9F6A10"),
                 ],
             ),
