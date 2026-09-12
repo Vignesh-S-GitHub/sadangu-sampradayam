@@ -1,0 +1,22 @@
+# Sadangu Sampradayam design tokens.
+# Derived from the approved logo and mobile UI mockup.
+MAROON = "#7A1020"
+DEEP_MAROON = "#570B17"
+MAROON_SOFT = "#941D2E"
+GOLD = "#C58A1A"
+GOLD_DARK = "#9F6A10"
+SAFFRON = "#F2A019"
+CREAM = "#FFF8E8"
+CREAM_DARK = "#F3E3C3"
+CARD = "#FFFCF5"
+INK = "#3F2723"
+MUTED = "#7D6A60"
+GREEN = "#18864B"
+RED = "#C13A3A"
+WHITE = "#FFFFFF"
+SHADOW = "#22000000"
+
+MOBILE_MAX_WIDTH = 430
+PAGE_PADDING = 16
+CARD_RADIUS = 20
+CONTROL_RADIUS = 14
