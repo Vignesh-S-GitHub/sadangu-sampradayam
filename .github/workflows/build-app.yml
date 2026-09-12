@@ -1,4 +1,4 @@
-name: Build Flet App
+name: Build Flet Web
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: build-app-${{ github.ref }}
+  group: build-web-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -37,37 +37,10 @@ jobs:
           cache: pip
           cache-dependency-path: mobile/pyproject.toml
       - run: pip install -e .
-      - name: Ignore custom launcher icon during CI
-        run: rm -f src/assets/icon.png
       - name: Build web
         run: flet build web . --yes --python-version 3.12
       - uses: actions/upload-artifact@v4
         with:
           name: sadangu-sampradayam-web
           path: mobile/build/web
-          retention-days: 14
-
-  apk:
-    runs-on: ubuntu-latest
-    env:
-      SADANGU_API_URL: ${{ vars.SADANGU_API_URL }}
-    defaults:
-      run:
-        working-directory: mobile
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: mobile/pyproject.toml
-      - run: pip install -e .
-      - name: Ignore custom launcher icon during CI
-        run: rm -f src/assets/icon.png
-      - name: Build APK
-        run: flet build apk . --yes --split-per-abi --python-version 3.12
-      - uses: actions/upload-artifact@v4
-        with:
-          name: sadangu-sampradayam-apk
-          path: mobile/build/apk
           retention-days: 14
